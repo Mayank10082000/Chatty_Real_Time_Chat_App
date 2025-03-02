@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
 import crypto from "crypto";
 import { sendPasswordResetEmail } from "../lib/email.js";
+import Message from "../models/message.model.js";
 
 export const signup = async (req, res) => {
   const { email, fullName, password } = req.body;
@@ -207,6 +208,28 @@ export const resetPassword = async (req, res) => {
     res.status(200).json({ message: "Password reset successful" });
   } catch (error) {
     console.log("Error in resetPassword controller:", error.message);
+    res.status(500).json({ message: "Internal Server error" });
+  }
+};
+
+export const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Delete all messages where the user is sender or receiver
+    await Message.deleteMany({
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    });
+
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+
+    // Clear the authentication cookie
+    res.cookie("jwt", "", { maxAge: 0 });
+
+    res.status(200).json({ message: "Account deleted successfully" });
+  } catch (error) {
+    console.log("Error in deleteAccount controller:", error.message);
     res.status(500).json({ message: "Internal Server error" });
   }
 };

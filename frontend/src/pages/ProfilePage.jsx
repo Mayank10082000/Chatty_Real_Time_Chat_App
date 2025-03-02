@@ -5,6 +5,7 @@ import { Camera, User, Mail } from "lucide-react";
 const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
   const [selectImg, setSelectImg] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Add this line
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -99,8 +100,48 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
+
+          {/* Delete Account section - MOVED INSIDE the parent div */}
+          <div className="space-y-3 mt-6">
+            <button
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="btn btn-error btn-outline w-full"
+            >
+              Delete Account
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Modal can stay outside the main container but inside the return statement */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 p-6 rounded-xl max-w-md w-full">
+            <h3 className="text-xl font-semibold mb-4">Delete Account</h3>
+            <p className="text-gray-400 mb-6">
+              Are you sure you want to delete your account? This action cannot
+              be undone and all your data will be permanently removed.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                className="btn btn-ghost"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-error"
+                onClick={() => {
+                  useAuthStore.getState().deleteAccount();
+                  setIsDeleteModalOpen(false);
+                }}
+              >
+                Delete Account
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
