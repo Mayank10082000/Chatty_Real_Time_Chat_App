@@ -11,9 +11,13 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendPasswordResetEmail = async (email, resetToken) => {
+export const sendPasswordResetEmail = async (email, resetToken, req) => {
   try {
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    // Get the origin from request headers or fallback to env variable
+    const origin = req.headers.origin || process.env.FRONTEND_URL || "";
+
+    // Construct the reset URL using the request origin
+    const resetUrl = `${origin}/reset-password/${resetToken}`;
 
     const mailOptions = {
       from: process.env.EMAIL_FROM,

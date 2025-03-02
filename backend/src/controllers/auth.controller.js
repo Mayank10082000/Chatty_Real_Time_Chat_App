@@ -150,11 +150,11 @@ export const forgotPassword = async (req, res) => {
     user.resetToken = resetToken;
     user.resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000);
 
-    // Save the user with aobve token info
+    // Save the user with above token info
     await user.save();
 
-    // Send email with reset link
-    const emailSent = await sendPasswordResetEmail(email, resetToken);
+    // Send email with reset link - pass the request object
+    const emailSent = await sendPasswordResetEmail(email, resetToken, req);
 
     if (!emailSent) {
       // If email fails, invalidate the token
