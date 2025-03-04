@@ -235,3 +235,32 @@ export const deleteAccount = async (req, res) => {
     res.status(500).json({ message: "Internal Server error" });
   }
 };
+
+export const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find user, but exclude sensitive information
+    const user = await User.findById(userId).select(
+      "-password -resetToken -resetTokenExpiry"
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Prepare public profile data
+    const publicProfile = {
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      profilePic: user.profilePic,
+      createdAt: user.createdAt,
+    };
+
+    res.status(200).json(publicProfile);
+  } catch (error) {
+    console.log("Error in getUserProfile controller:", error.message);
+    res.status(500).json({ message: "Internal Server error" });
+  }
+};

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Camera, User, Mail } from "lucide-react";
+import { Camera, User, Mail, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
+  const navigate = useNavigate();
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
   const [selectImg, setSelectImg] = useState(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Add this line
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -25,6 +27,15 @@ const ProfilePage = () => {
   return (
     <div className="h-screen pt-20">
       <div className="max-w-2xl mx-auto p-4 py-8">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-base-content/70 hover:text-base-content transition-colors mb-4"
+        >
+          <ArrowLeft className="size-5" />
+          <span>Back</span>
+        </button>
+
         <div className="bg-gray-900 rounded-xl p-6 space-y-8">
           <div className="text-center">
             <h1 className="text-2xl font-semibold">Profile</h1>
@@ -101,7 +112,7 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Delete Account section - MOVED INSIDE the parent div */}
+          {/* Delete Account section */}
           <div className="space-y-3 mt-6">
             <button
               onClick={() => setIsDeleteModalOpen(true)}
@@ -113,7 +124,7 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Modal can stay outside the main container but inside the return statement */}
+      {/* Delete Account Modal */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-gray-800 p-6 rounded-xl max-w-md w-full">
