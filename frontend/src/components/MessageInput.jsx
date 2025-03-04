@@ -76,7 +76,7 @@ const MessageInput = () => {
       )}
 
       <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-        <div className="flex-1 flex gap-2">
+        <div className="flex-1 flex gap-2 items-center">
           <input
             type="text"
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
@@ -92,23 +92,24 @@ const MessageInput = () => {
             onChange={handleImageChange}
           />
 
+          {/* This button now shows at all screen sizes but adapts its size */}
           <button
             type="button"
-            className={`hidden sm:flex  btn btn-circle ${
+            className={`btn btn-circle btn-sm sm:btn-md flex items-center justify-center ${
               imagePreview ? "text-emerald-500" : "text-zinc-400"
             }`}
             onClick={() => fileInputRef.current.click()}
           >
-            <Image size={20} />
+            <Image size={16} className="sm:size-5" />
           </button>
         </div>
 
         <button
           type="submit"
-          className="btn btn-sm btn-circle"
+          className="btn btn-circle btn-sm sm:btn-md flex items-center justify-center"
           disabled={!text.trim() && !imagePreview}
         >
-          <Send size={22} />
+          <Send size={16} className="sm:size-5" />
         </button>
       </form>
     </div>
